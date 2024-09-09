@@ -1,0 +1,145 @@
+LoginManager:
+    name: "signin"
+    app:app
+    MDFloatLayout:
+        md_bg_color: 1,1,1,1
+        MDIconButton:
+            icon: "chevron-left"
+            user_font_size: "35sp"
+            pos_hint: {"center_y":.95}
+            on_release:
+                passwd.text = ""
+                email.text = ""
+                root.manager.transition.direction = "right"
+                root.manager.current = "welcome"
+        LabelBtn:
+            text: "Back"
+            font_size: "18sp"
+            font_name: "MPoppins"
+            pos_hint: {"center_x":.2,"center_y":.949}
+            on_release: 
+                passwd.text = ""
+                email.text = ""
+                root.manager.transition.direction = "right"
+                root.manager.current = "welcome"
+            adaptive_size: True
+        Image:
+            source: "frontend/assets/gray_spare.png"
+            size_hint: .4,.4
+            pos_hint: {"center_x":.22,"center_y":.8}
+        
+        MDLabel:
+            text: "Proceed with your"
+            font_name: "MPoppins"
+            font_size: "22sp"
+            halign:"left"
+            pos_hint: {"center_x":.6,"center_y":.65}
+            theme_text_color: "Custom"
+            text_color: rgba(120,120,120,255)
+          
+        MDLabel:
+            text: "Login"
+            font_name: "BPoppins"
+            font_size: "22sp"
+            halign:"left"
+            pos_hint: {"center_x":.6,"center_y":.58}
+        
+        MDFloatLayout:
+            size_hint: .79,.08
+            pos_hint: {"center_x":.5,"center_y":.42}
+            MDLabel:
+                text: "Email"
+                font_size: "14sp"
+                font_name: "MPoppins"
+                pos_hint: {"center_x":.5,"center_y":.9}
+            TextInput:
+                id: email
+                size_hint_y: .75
+                font_name: "MPoppins"
+                pos_hint: {"center_x":.49,"center_y":.4}
+                background_color: 0,0,0,0
+                cursor_color: 0,0,0,1
+                cursor_size: "2sp"
+                foreground_color: 120/255,120/255,120/255,1
+                font_size: "17sp"
+                multiline: False
+                on_text_validate:
+                    passwd.focus = True
+            MDIcon:
+                icon: "account-key-outline"
+                pos_hint: {"center_x":.96,"center_y":.5}
+                size_hint: .5,.5
+            MDFloatLayout:
+                pos_hint: {"center_x":.5,"center_y":0}
+                size_hint_y:.03
+                md_bg_color: 120/255,120/255,120/255,1
+        
+        MDFloatLayout:
+            size_hint: .79,.08
+            pos_hint: {"center_x":.5,"center_y":.27}
+            MDLabel:
+                text: "Password"
+                font_size: "14sp"
+                font_name: "MPoppins"
+                pos_hint: {"center_x":.5,"center_y":.9}
+            TextInput:
+                id: passwd
+                size_hint_y: .75
+                font_name: "MPoppins"
+                pos_hint: {"center_x":.49,"center_y":.4}
+                background_color: 0,0,0,0
+                cursor_color: 0,0,0,1
+                cursor_size: "2sp"
+                foreground_color: 120/255,120/255,120/255,1
+                font_size: "17sp"
+                multiline: False
+                password: True
+                on_text_validate:
+                    root.login()
+            MDIconButton:
+                icon: "eye-outline"
+                pos_hint: {"center_x":.96,"center_y":.5}
+                on_release:
+                    passwd.password = False if passwd.password  else True
+                    self.icon = "eye-off-outline" if self.icon == "eye-outline" else "eye-outline"
+            MDFloatLayout:
+                pos_hint: {"center_x":.5,"center_y":0}
+                size_hint_y:.03
+                md_bg_color: 120/255,120/255,120/255,1
+
+        
+        Button:
+            text: "Login"
+            background_color: 0,0,0,0
+            font_name: "BPoppins"
+            size_hint: .79,.08
+            pos_hint: {"center_x":.5,"center_y":.15}
+            on_release:
+                root.login()
+            canvas.before:
+                Color:
+                    rgb: 226/255,0,48/255,1
+                RoundedRectangle:
+                    size: self.size
+                    pos: self.pos
+                    radius: [5]
+        
+        MDLabel:
+            text: "Don't have an account?"
+            font_name: "MPoppins"
+            font_size:"11sp"
+            pos_hint: {"center_x":.68,"center_y":.06}
+            color: rgba(135,133,193,255)
+        
+        MDTextButton:
+            text: "Sign Up"
+            font_name: "MPoppins"
+            font_size:"11sp"
+            pos_hint: {"center_x":.75,"center_y":.06}
+            color: rgba(135,133,193,255)
+            on_release:
+                passwd.text = ""
+                email.text = ""
+                root.manager.transition.direction = "left"
+                root.manager.current = "register"
+

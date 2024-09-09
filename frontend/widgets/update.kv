@@ -1,0 +1,176 @@
+UpdateManager:
+    name: "update"
+    app:app
+    MDFloatLayout:
+        md_bg_color: 1,1,1,1
+        MDIconButton:
+            icon: "chevron-left"
+            user_font_size: "35sp"
+            pos_hint: {"center_y":.95}
+            on_release:
+                passwd.text = ""
+                confpasswd.text = ""
+                email.text = ""
+                root.manager.transition.direction = "right"
+                root.manager.current = "main"
+        LabelBtn:
+            text: "Back"
+            font_size: "18sp"
+            font_name: "MPoppins"
+            pos_hint: {"center_x":.2,"center_y":.949}
+            adaptive_size: True
+            on_release: 
+                passwd.text = ""
+                confpasswd.text = ""
+                email.text = ""
+                root.manager.transition.direction = "right"
+                root.manager.current = "main"
+        Image:
+            source: "frontend/assets/spares.png"
+            size_hint: .3,.3
+            pos_hint: {"center_x":.22,"center_y":.8}
+        
+        MDLabel:
+            text: "Proceed with your"
+            font_name: "MPoppins"
+            font_size: "22sp"
+            halign:"left"
+            pos_hint: {"center_x":.6,"center_y":.65}
+            theme_text_color: "Custom"
+            text_color: rgba(120,120,120,255)
+          
+        MDLabel:
+            text: "Updates"
+            font_name: "BPoppins"
+            font_size: "22sp"
+            halign:"left"
+            pos_hint: {"center_x":.6,"center_y":.60}
+        
+        MDFloatLayout:
+            size_hint: .79,.08
+            pos_hint: {"center_x":.5,"center_y":.49}
+            MDLabel:
+                text: "Update Email"
+                font_size: "14sp"
+                font_name: "MPoppins"
+                pos_hint: {"center_x":.5,"center_y":.9}
+            TextInput:
+                id: email
+                size_hint_y: .75
+                font_name: "MPoppins"
+                pos_hint: {"center_x":.49,"center_y":.4}
+                background_color: 0,0,0,0
+                cursor_color: 0,0,0,1
+                cursor_size: "2sp"
+                foreground_color: 120/255,120/255,120/255,1
+                font_size: "17sp"
+                multiline: False
+            MDIcon:
+                icon: "account-key-outline"
+                pos_hint: {"center_x":.96,"center_y":.5}
+                size_hint: .5,.5
+            MDFloatLayout:
+                pos_hint: {"center_x":.5,"center_y":0}
+                size_hint_y:.03
+                md_bg_color: 120/255,120/255,120/255,1
+        
+        MDFloatLayout:
+            size_hint: .79,.08
+            pos_hint: {"center_x":.5,"center_y":.36}
+            MDLabel:
+                text: "New Password"
+                font_size: "14sp"
+                font_name: "MPoppins"
+                pos_hint: {"center_x":.5,"center_y":.9}
+            TextInput:
+                id: passwd
+                size_hint_y: .75
+                font_name: "MPoppins"
+                pos_hint: {"center_x":.49,"center_y":.4}
+                background_color: 0,0,0,0
+                cursor_color: 0,0,0,1
+                cursor_size: "2sp"
+                foreground_color: 120/255,120/255,120/255,1
+                font_size: "17sp"
+                multiline: False
+                password: True
+            MDIconButton:
+                icon: "eye-outline"
+                pos_hint: {"center_x":.96,"center_y":.5}
+                on_release:
+                    passwd.password = False if passwd.password  else True
+                    self.icon = "eye-off-outline" if self.icon == "eye-outline" else "eye-outline"
+            MDFloatLayout:
+                pos_hint: {"center_x":.5,"center_y":0}
+                size_hint_y:.03
+                md_bg_color: 120/255,120/255,120/255,1
+
+        
+        MDFloatLayout:
+            size_hint: .79,.08
+            pos_hint: {"center_x":.5,"center_y":.23}
+            MDLabel:
+                text: "Confirm New Password"
+                font_size: "14sp"
+                font_name: "MPoppins"
+                pos_hint: {"center_x":.5,"center_y":.9}
+            TextInput:
+                id: confpasswd
+                size_hint_y: .75
+                font_name: "MPoppins"
+                pos_hint: {"center_x":.49,"center_y":.4}
+                background_color: 0,0,0,0
+                cursor_color: 0,0,0,1
+                cursor_size: "2sp"
+                foreground_color: 120/255,120/255,120/255,1
+                font_size: "17sp"
+                multiline: False
+                password: True
+            MDIconButton:
+                icon: "eye-outline"
+                pos_hint: {"center_x":.96,"center_y":.5}
+                on_release:
+                    confpasswd.password = False if confpasswd.password  else True
+                    self.icon = "eye-off-outline" if self.icon == "eye-outline" else "eye-outline"
+            MDFloatLayout:
+                pos_hint: {"center_x":.5,"center_y":0}
+                size_hint_y:.03
+                md_bg_color: 120/255,120/255,120/255,1
+
+        
+        Button:
+            text: "UPDATE"
+            background_color: 0,0,0,0
+            font_name: "BPoppins"
+            size_hint: .79,.08
+            pos_hint: {"center_x":.5,"center_y":.12}
+            on_release:
+                root.update()
+            canvas.before:
+                Color:
+                    rgb: 226/255,0,48/255,1
+                RoundedRectangle:
+                    size: self.size
+                    pos: self.pos
+                    radius: [5]
+        
+        MDLabel:
+            text: "Already have an account?"
+            font_name: "MPoppins"
+            font_size:"11sp"
+            pos_hint: {"center_x":.68,"center_y":.04}
+            color: rgba(135,133,193,255)
+        
+        MDTextButton:
+            text: "Sign In"
+            font_name: "MPoppins"
+            font_size:"11sp"
+            pos_hint: {"center_x":.75,"center_y":.04}
+            color: rgba(135,133,193,255)
+            on_release:
+                passwd.text = ""
+                confpasswd.text = ""
+                email.text = ""
+                root.manager.transition.direction = "right"
+                root.manager.current = "signin"
+

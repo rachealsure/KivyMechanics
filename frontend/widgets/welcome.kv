@@ -1,0 +1,67 @@
+MDScreen:
+    name: "welcome"
+    MDFloatLayout:
+        md_bg_color: 226,0,48, 255
+        Image:
+            source: "frontend/assets/spares.png"
+            size_hint: .7,.7
+            pos_hint: {"center_x":.5,"center_y":.75}
+
+        MDLabel:
+            text: "Rosslyn Gates"
+            pos_hint: {"center_x":.5,"center_y":.47}
+            halign: "center"
+            theme_text_color: "Custom"
+            text_color: 1,1,1,1
+            font_size: "40sp"
+            font_name: "Motion"
+        MDLabel:
+            text: "AutoGarage"
+            pos_hint: {"center_x":.5,"center_y":.41}
+            halign: "center"
+            theme_text_color: "Custom"
+            text_color: 1,1,1,1
+            font_size: "30sp"
+            font_name: "Motion"
+        MDLabel:
+            text: "The Best AutoSpare Solutions"
+            pos_hint: {"center_x":.5,"center_y":.35}
+            halign: "center"
+            theme_text_color: "Custom"
+            text_color: 1,1,1,1
+            font_size: "13sp"
+            font_name: "MPoppins"
+        Button:
+            text: "LOGIN"
+            size_hint: .66,.065
+            pos_hint: {"center_x":.5,"center_y":.20}
+            background_color: 0,0,0,0
+            font_name: "BPoppins"
+            on_release:
+                root.manager.transition.direction = "left"
+                root.manager.current = "signin"
+            canvas.before:
+                Color:
+                    rgb: rgba(52,0,231,255)
+                RoundedRectangle:
+                    size: self.size
+                    pos: self.pos
+                    radius: [5]
+        Button:
+            text: "REGISTER"
+            size_hint: .66,.065
+            pos_hint: {"center_x":.5,"center_y":.11}
+            background_color: 0,0,0,0
+            font_name: "BPoppins"
+            color: rgba(52,0,231,255)
+            on_release:
+                root.manager.transition.direction = "left"
+                root.manager.current = "register"
+
+            canvas.before:
+                Color:
+                    rgb: rgba(52,0,231,255)
+                Line:
+                    width:1.2
+                    rounded_rectangle: self.x,self.y,self.width,self.height,5,5,5,5,100
+            

@@ -1,0 +1,490 @@
+#: import ew kivy.uix.effectwidget
+#: import get_color_from_hex kivy.utils.get_color_from_hex
+
+MainScreen:
+    name: "main"
+    app: app
+    MDFloatLayout:
+        md_bg_color: 1,1,1,1
+        MDBoxLayout:
+            md_bg_color: rgba(62,62,47,255) 
+            size_hint_y: .45
+            pos_hint: {"top":1}
+            orientation: "vertical"
+            #EffectWidget:
+                #effects: [ew.VerticalBlurEffect(size=1),ew.HorizontalBlurEffect(size=1)]
+            Widget:
+                
+            MDCard:
+                pos_hint: {"center_x":.7}
+                size: ("150dp","150dp")
+                size_hint: None,None
+                md_bg_color: rgba(62,62,47,255) 
+                ripple_behavior: True
+                radius: self.height
+                FitImage:
+                    source: "frontend/assets/gray_spare.png"
+                    radius: root.radius
+            Widget:
+                size_hint_y: .3
+
+        MDIconButton:
+            icon: "dots-vertical"
+            pos_hint: {"center_y":.95}
+            user_font_size: "20sp"
+            theme_text_color: "Custom"
+            text_color: rgba(0,122,204,255)
+            on_release: nav_drawer.set_state("open")
+        MDIconButton:
+            icon: "logout"
+            pos_hint: {"center_x":.93,"center_y":.95}
+            user_font_size: "20sp"
+            theme_text_color: "Custom"
+            text_color: rgba(0,122,204,255)
+            on_release: 
+                app.is_loggedin = False
+                root.manager.transition.direction = "left"
+                root.manager.current = "signin"
+        MDLabel:
+            text: "Rosslyn Gates"
+            font_name: "Motion"
+            font_size: "30sp"
+            halign: "center"
+            bold: True
+            pos_hint: { "center_y":.95}
+            color: rgba(71,92,119,255)
+        MDLabel:
+            text: "AutoGarage"
+            font_name: "Motion"
+            font_size: "25sp"
+            halign: "center"
+            bold: True
+            pos_hint: { "center_y":.90}
+            color: rgba(71,92,119,255)
+        
+        MDLabel:
+            text: "Hello,"
+            bold: True
+            font_name: "BPoppins"
+            font_style: "H4"
+            theme_text_color: "Custom"
+            text_color: rgba(188,202,228,255)
+            pos_hint: {"center_y":.80}
+            x: "24dp"
+        MDLabel:
+            id: email
+            text: ""
+            bold: True
+            font_name: "MPoppins"
+            font_style: "H6"
+            theme_text_color: "Custom"
+            text_color: rgba(246,250,255,255)
+            pos_hint: {"center_y":.72}
+            x: "24dp"
+            shorten: True
+            shorten_from: "right"
+        
+        MDGridLayout:
+            cols: 2
+            rows: 2
+            spacing: "24dp"
+            padding: "34dp"
+            size_hint_y: None
+            height: root.height / 1.5
+            Card:
+                id: service             
+                source: "frontend/assets/mechanic.png"
+                text: "Car Service"
+                on_release:
+                    root.need_service(self)
+            Card:
+                id: store             
+                source: "frontend/assets/gray_lubricate.png"
+                text: "Accessories"
+                on_release:
+                    root.load_store()
+                    
+            Card:   
+                id: puncture             
+                source: "frontend/assets/puncture.png"
+                text: "Puncture"
+                on_release:
+                    root.has_puncture(self)
+            Card:
+                id: tow             
+                source: "frontend/assets/tow.png"
+                text: "Tow Service"
+                on_release:
+                    root.ask_for_tow(self)
+
+        CartMessagePopup:  
+            id: notification
+            MDRelativeLayout:
+                MDIconButton:
+                    icon: "close"
+                    pos_hint: {"right":1,"center_y":1} 
+                    on_release:  
+                        app.hide_widget(notification,dohide=True)
+                MDLabel:
+                    text: "Notification"
+                    font_name: "BPoppins"
+                    font_size: "23sp"
+                    pos_hint: {"center_x":.6,"center_y":.97}
+                    color: rgba(0,0,59,255)
+
+                MDCard:
+                    size_hint: .99,.75
+                    pos_hint: {"center_x":.56,"center_y":.55}
+                    #elevation: 4
+                    radius: [0,0,12,12]
+                    line_color: get_color_from_hex("#e0e0e0")
+                    ScrollView:
+                        MDSelectionList:
+                            id: selection_list
+                            spacing: "12dp"
+                            overlay_color: root.overlay_color[:-1] + [.2]
+                            icon_bg_color: root.overlay_color
+                            on_selected: root.on_selected(*args)
+                            on_unselected: root.on_unselected(*args)
+                            #on_selected_mode: root.set_selection_mode(*args)
+                
+                Button:
+                    id: delete_msg
+                    text: "DELETE"
+                    size_hint: .66,.065
+                    pos_hint: {"center_x":.5,"center_y":.12}
+                    background_color: 0,0,0,0
+                    font_name: "BPoppins"
+                    on_release: root.delete()
+                    disabled: True
+                    canvas.before:
+                        Color:
+                            rgb: rgba(52,0,231,255)
+                        RoundedRectangle:
+                            size: self.size
+                            pos: self.pos
+                            radius: [5]
+        
+        MainScreenServicePopup:  
+            id: service_popup
+            size_hint: .9,.7
+            MDRelativeLayout:
+                MDIconButton:
+                    icon: "close"
+                    pos_hint: {"right":1,"center_y":1.15} 
+                    on_release:  
+                        puncture.disabled = False
+                        tow.disabled = False
+                        service.disabled = False
+                        store.disabled = False
+                        car_type.text = ""
+                        location.text = ""
+                        root.category = ""
+                        app.hide_widget(service_popup)
+                MDLabel:
+                    id: _service_title
+                    text: ""
+                    font_name: "BPoppins"
+                    font_size: "20sp"
+                    pos_hint: {"center_x":.6,"center_y":1.12}
+                    color: rgba(0,0,59,255)
+
+                MDLabel:
+                    text: "Fill the form to request..."
+                    font_name: "MPoppins"
+                    font_size: "18sp"
+                    pos_hint: {"center_x":.6,"center_y":1.05}
+                    color: rgba(135,133,195,255)
+                
+                MDFloatLayout:
+                    size_hint: .7,.1
+                    pos_hint: {"center_x":.5,"center_y":.95}
+                    TextInput:
+                        id: service_type
+                        hint_text: "* Service"
+                        font_name: "MPoppins"
+                        size_hint_y: .75
+                        pos_hint: {"center_x":.5, "center_y":.5}
+                        background_color: 1,1,1,0
+                        foreground_color: rgba(0,0,59,255)
+                        cursor_color: rgba(0,0,59,255)
+                        font_size: "14sp"
+                        cursor_width: "2sp"
+                        multiline: False
+                        on_focus: 
+                            root.dialog()
+                        on_text_validate:
+                            location.focus = True
+                    MDFloatLayout:
+                        pos_hint: {"center_x":.52,"center_y":0}
+                        size_hint_y:.03
+                        md_bg_color: rgba(178,178,178,255)
+                
+                MDFloatLayout:
+                    size_hint: .7,.1
+                    pos_hint: {"center_x":.5,"center_y":.78}
+                    TextInput:
+                        id: car_service_type
+                        hint_text: "* Car Type"
+                        font_name: "MPoppins"
+                        size_hint_y: .75
+                        pos_hint: {"center_x":.5, "center_y":.5}
+                        background_color: 1,1,1,0
+                        foreground_color: rgba(0,0,59,255)
+                        cursor_color: rgba(0,0,59,255)
+                        font_size: "14sp"
+                        cursor_width: "2sp"
+                        multiline: False
+                        on_focus: root.select_car()
+                            
+                        on_text_validate:
+                            location.focus = True
+                    MDFloatLayout:
+                        pos_hint: {"center_x":.52,"center_y":0}
+                        size_hint_y:.03
+                        md_bg_color: rgba(178,178,178,255)
+
+                MDFloatLayout:
+                    size_hint: .7,.1
+                    pos_hint: {"center_x":.5,"center_y":.565}
+                    TextInput:
+                        id: service_location
+                        hint_text: "* Current Location"
+                        font_name: "MPoppins"
+                        size_hint_y: None
+                        height: dp(75)
+                        pos_hint: {"center_x":.5, "center_y":.7}
+                        background_color: 1,1,1,0
+                        foreground_color: rgba(0,0,59,255)
+                        cursor_color: rgba(0,0,59,255)
+                        font_size: "14sp"
+                        cursor_width: "2sp"
+                        multiline: True
+                        max_height: "75dp"
+                       
+                    MDIconButton:
+                        icon: "map-marker-radius-outline"
+                        pos_hint: {"right":1.15, "center_y":.7}
+                        on_release:
+                            root.get_gps()
+                    MDFloatLayout:
+                        pos_hint: {"center_x":.52,"center_y":0}
+                        size_hint_y:.03
+                        md_bg_color: rgba(178,178,178,255)
+
+                MDLabel:
+                    id: service_cost
+                    text: "Cost: 0 Ksh."
+                    font_name: "MPoppins"
+                    font_size: "15sp"
+                    halign: "center"
+                    bold: True
+                    pos_hint: { "center_y":.45}
+                    color: rgba(71,92,119,255)
+                Button:
+                    text: "REQUEST"
+                    size_hint: .66,.065
+                    pos_hint: {"center_x":.5,"center_y":.35}
+                    background_color: 0,0,0,0
+                    font_name: "BPoppins"
+                    on_release: root.ask()
+                    canvas.before:
+                        Color:
+                            rgb: rgba(52,0,231,255)
+                        RoundedRectangle:
+                            size: self.size
+                            pos: self.pos
+                            radius: [5]
+
+
+        MainScreenPopup:  
+            id: ask_help
+            size_hint: .9,.7
+            MDRelativeLayout:
+                MDIconButton:
+                    icon: "close"
+                    pos_hint: {"right":1,"center_y":1.1} 
+                    on_release:  
+                        puncture.disabled = False
+                        tow.disabled = False
+                        service.disabled = False
+                        store.disabled = False
+                        car_type.text = ""
+                        location.text = ""
+                        root.category = ""
+                        app.hide_widget(ask_help)
+                MDLabel:
+                    id: service_title
+                    text: ""
+                    font_name: "BPoppins"
+                    font_size: "20sp"
+                    pos_hint: {"center_x":.6,"center_y":1.05}
+                    color: rgba(0,0,59,255)
+
+                MDLabel:
+                    text: "Fill the form to request..."
+                    font_name: "MPoppins"
+                    font_size: "18sp"
+                    pos_hint: {"center_x":.6,"center_y":.96}
+                    color: rgba(135,133,195,255)
+                
+                MDFloatLayout:
+                    size_hint: .7,.1
+                    pos_hint: {"center_x":.5,"center_y":.85}
+                    TextInput:
+                        id: car_type
+                        hint_text: "* Vehicle Type"
+                        font_name: "MPoppins"
+                        size_hint_y: .75
+                        pos_hint: {"center_x":.5, "center_y":.5}
+                        background_color: 1,1,1,0
+                        foreground_color: rgba(0,0,59,255)
+                        cursor_color: rgba(0,0,59,255)
+                        font_size: "14sp"
+                        cursor_width: "2sp"
+                        multiline: False
+                        on_focus: 
+                            root.dialog()
+                        on_text_validate:
+                            location.focus = True
+                    MDFloatLayout:
+                        pos_hint: {"center_x":.52,"center_y":0}
+                        size_hint_y:.03
+                        md_bg_color: rgba(178,178,178,255)
+
+                MDFloatLayout:
+                    size_hint: .7,.1
+                    pos_hint: {"center_x":.5,"center_y":.60}
+                    TextInput:
+                        id: location
+                        hint_text: "* Current Location"
+                        font_name: "MPoppins"
+                        size_hint_y: None
+                        height: dp(75)
+                        pos_hint: {"center_x":.5, "center_y":.7}
+                        background_color: 1,1,1,0
+                        foreground_color: rgba(0,0,59,255)
+                        cursor_color: rgba(0,0,59,255)
+                        font_size: "14sp"
+                        cursor_width: "2sp"
+                        multiline: True
+                        max_height: "75dp"
+                       
+                    MDIconButton:
+                        icon: "map-marker-radius-outline"
+                        pos_hint: {"right":1.15, "center_y":.7}
+                        on_release:
+                            root.get_gps()
+                    MDFloatLayout:
+                        pos_hint: {"center_x":.52,"center_y":0}
+                        size_hint_y:.03
+                        md_bg_color: rgba(178,178,178,255)
+
+                MDLabel:
+                    id: cost
+                    text: "Cost: 0 Ksh."
+                    font_name: "MPoppins"
+                    font_size: "15sp"
+                    halign: "center"
+                    bold: True
+                    pos_hint: { "center_y":.45}
+                    color: rgba(71,92,119,255)
+                Button:
+                    text: "REQUEST"
+                    size_hint: .66,.065
+                    pos_hint: {"center_x":.5,"center_y":.35}
+                    background_color: 0,0,0,0
+                    font_name: "BPoppins"
+                    on_release: root.ask()
+                    canvas.before:
+                        Color:
+                            rgb: rgba(52,0,231,255)
+                        RoundedRectangle:
+                            size: self.size
+                            pos: self.pos
+                            radius: [5]
+             
+        MDNavigationDrawer:  
+            id: nav_drawer
+            radius: (0, 16, 16, 0)
+            type: "modal"
+            scrim_color: 1, 1, 1, .8
+            md_bg_color: rgba(249, 247, 243, 255) if app.theme_cls.theme_style == "Light" else rgba(51,53,62,255)
+            MDNavigationDrawerMenu:
+                
+                MDNavigationDrawerLabel:
+                    text: "Actions"
+                MDNavigationDrawerDivider:
+                    
+                DrawerClickableItem:
+                    icon: "account-cog-outline"
+                    text: "Update Profile"
+                    
+                    on_release: 
+                        nav_drawer.set_state("close")
+                        root.manager.transition.direction = "left"
+                        root.manager.current = "update"
+                        
+                MDNavigationDrawerDivider:
+                    id: root_divider
+
+                DrawerClickableItem:
+                    id: root_action
+                    icon: "car-wrench"
+                    text: "Car Service"
+                    on_release: 
+                        nav_drawer.set_state("close")
+                        root.need_service(self)
+                MDNavigationDrawerDivider:
+
+                DrawerClickableItem:
+                    icon: "oil"
+                    right_text: ""
+                    text_right_color: "#4a4939"
+                    text: "Accessories"
+                    on_release:
+                        nav_drawer.set_state("close")
+                        root.load_store()
+                MDNavigationDrawerDivider:
+               
+                DrawerClickableItem:
+                    icon: "car-tire-alert"
+                    text: "Puncture"
+                    on_release: 
+                        nav_drawer.set_state("close")
+                        root.has_puncture(self)
+                MDNavigationDrawerDivider:
+                
+                DrawerClickableItem:
+                    icon: "tow-truck"
+                    text: "Tow Service"
+                    on_release: 
+                        nav_drawer.set_state("close")
+                        root.ask_for_tow(self)
+                
+                MDNavigationDrawerDivider:
+                
+                DrawerClickableItem:
+                    id: msg_btn
+                    icon: "message-alert-outline"
+                    right_text: ""
+                    text_right_color: "#4a4939"
+                    text: "Notification"
+                    on_release: 
+                        nav_drawer.set_state("close")
+                        root.load_messages()
+                
+                MDNavigationDrawerDivider:
+                
+                DrawerClickableItem:
+                    icon: "information-variant"
+                    text: "Get Started"
+                    on_release: 
+                        nav_drawer.set_state("close")
+
+                    
+                MDNavigationDrawerDivider:
+                MDNavigationDrawerDivider:
+                MDNavigationDrawerLabel
+                    text: "copyright © 2022"
+                MDNavigationDrawerDivider:

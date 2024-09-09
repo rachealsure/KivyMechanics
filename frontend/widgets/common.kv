@@ -1,0 +1,354 @@
+
+
+<ItemConfirm>
+    on_release: 
+        root.set_icon(check)
+        app.set_selection(value=root.text,category=root.category,is_dialog=root.is_dialog,grouped=root.grouped)
+    CheckboxLeftWidget:
+        id: check
+        group: "check"
+        on_active: app.set_selection(value=root.text,category=root.category,is_dialog=root.is_dialog,grouped=root.grouped)
+
+<ShopCard>
+    padding: 2
+    size_hint: None,None
+    size: "270dp","70dp"
+    style: "elevated"
+    shadow_softness:2
+    shadow_offset:0, 1
+    line_color: 0.2, 0.2, 0.2, 0.8
+    MDRelativeLayout:
+        TwoLineAvatarIconListItem:
+            id: item
+            text: root.product
+            secondary_text: root.description
+            on_size: 
+                self.ids._right_container.height = container.height - dp(80)
+                self.ids._right_container.width = container.width - dp(70)
+            ImageLeftWidget:
+                source: root.source
+
+            ContainerIcon:
+                id: container 
+                MDIcon:
+                    icon: "cart"
+                    pos_hint: {"center_y":.6}
+<DescBox>
+    orientation: "vertical"
+    adaptive_height: True
+    spacing: "8dp"
+    padding: "24dp","36dp",0,0
+    pos_hint: {"center_x":1}
+    opacity: 0
+ 
+    MDLabel:
+        text: root.product
+        color: "white"
+        adaptive_height: True
+        font_style: "H5"
+    
+    MDLabel:
+        text: root.description
+        color: "white"
+        adaptive_size: True
+        text_size: root.width / 2,None
+        font_style: "Caption"
+        bold: True
+    
+    MDLabel:
+        id: cost
+        text: "Cost: 0 Ksh."
+        color: "white"
+        adaptive_size: True
+        text_size: root.width / 2,None
+        font_style: "Caption"
+        bold: True
+
+    MDLabel:
+        id: quantity
+        text: "Quantity: 0"
+        color: "white"
+        adaptive_size: True
+        text_size: root.width / 2,None
+        font_style: "Caption"
+        bold: True
+    
+    MDCard:
+        size_hint: None,None
+        size: buy.size
+        spacing: "24dp"
+        MDRaisedButton:
+            id: buy
+            text: "BUY"
+            md_bg_color: "white"
+            theme_text_color: "Custom"
+            text_color: "black"
+            font_name: "BPoppins"
+            on_release: root.get_location_dialog(root.parent)
+            disabled: True
+
+        MDTextField:
+            id: quantity_field
+            size_hint_x: None
+            width: "100dp"
+            size_hint_y: None
+            height: "30dp"
+            hint_text: "Quantity"
+            mode: "rectangle"
+            on_text: root.set_quantity(*args)
+        #    id: drop_item
+        #    text: "Quantity"
+         #   icon: "clipboard-list-outline"
+          #  icon_color: "white"
+          #  on_release: root.show_quantity(root.parent)
+          #  font_name: "MPoppins"
+
+<Content>
+    orientation: "vertical"
+    spacing: "12dp"
+    size_hint_y: None
+    height: "60dp"
+    MDTextField:
+        id: location
+        hint_text: "Current Location"
+        helper_text: "Click 'OK' to confirm"
+        multiline: True
+        max_height: "75dp"
+        size_hint_y: None
+        height: dp(75)
+        size_hint_x: .8
+        pos_hint: {"center_x":.6}
+    MDRelativeLayout:
+        pos_hint: {"center_y":.6}
+        MDIconButton:
+            icon: "map-marker-radius-outline"
+            on_release:
+                root.get_gps()
+    
+
+<IconListItem@OneLineIconListItem>
+    icon: ""
+    on_release: root.on_release
+    IconLeftWidget:
+        icon: root.icon
+        on_release: root.on_release()
+
+<ScaleCard>:
+    id: scale_card
+    app:app
+    ScaleImage:
+        id: image
+        mipmap: True
+        source: root.source
+        size_hint: None,None
+        size: root.width - dp(20),root.height - dp(20)
+        pos_hint: {"center_x":.5,"center_y":.5}
+
+        
+
+    
+<DrawerClickableItem@MDNavigationDrawerItem>
+    focus_color: "#e7e4c0"
+    text_color: "#4a4939"
+    icon_color: "#4a4939"
+    ripple_color: "#c5bdd2"
+    selected_color: "#0c6c4d"
+
+<ItemCard@MDCard>
+    line_color: get_color_from_hex("#e0e0e0")
+    radius: 12
+    #elevation: 2
+    orientation: "horizontal"
+    ripple_behavior: True
+    padding: "12dp"
+    icon: "android"
+    text: ""
+    size_hint_y: None
+    height: self.minimum_height
+    MDIcon:
+        icon: root.icon
+        size_hint: None,None
+        size: "36dp","36dp"
+        pos_hint: {"center_y":.5}
+    MDLabel:
+        text: root.text
+        halign: "center"
+        font_name: "BPoppins"
+        shorten: True
+        shorten_from: "right"
+        theme_text_color: "Custom"
+        text_color: rgba(71,92,119,255)
+        adaptive_height: True
+        font_size: "14sp"
+        pos_hint: {"center_y":.5}
+
+<Card@MDCard>
+    radius: 12
+    #elevation: 3
+    orientation: "vertical"
+    ripple_behavior: True
+    md_bg_color: get_color_from_hex("#e0e0e0")
+    source: "frontend/assets/gray_spare.png"
+    text: ""
+    padding: "2dp","2dp","2dp","24dp"
+    Image:
+        source: root.source
+    MDLabel:
+        text: root.text
+        halign: "center"
+        font_name: "BPoppins"
+        shorten: True
+        shorten_from: "right"
+        theme_text_color: "Custom"
+        text_color: rgba(71,92,119,255)
+        adaptive_height: True
+        font_size: "13sp"
+
+
+<PopupCard@FakeRectangularElevationBehavior+MDFloatLayout>:
+    md_bg_color: get_color_from_hex("#ffffff")
+    elevation: 3
+    size_hint: .9,.9
+    pos_hint: {"center_x":.5,"center_y":.5}
+    radius: [10]
+
+<MainScreenServicePopup@PopupCard>
+<CartMessagePopup@PopupCard>
+<MainScreenPopup@PopupCard>
+<CartPopup@PopupCard>
+<StoreScreenPopup@PopupCard>
+<StoreAddPopup@PopupCard>
+<ServiceAddPopup@PopupCard>
+<OrdersPopup@PopupCard>
+<ManagerAddPopup@PopupCard>
+
+<LabelBtn@ButtonBehavior+MDLabel>
+
+<CustomCartItem>
+    size_hint_y: None
+    height: dp(100)
+    orientation: "vertical"
+    md_bg_color: get_color_from_hex("#e0e0e0")
+    ripple_behavior: True
+    on_release:
+        print("Pressed")
+    MDLabel:
+        text: root.lbl_product
+        halign: "center"
+        font_name: "MPoppins"
+        shorten: True
+        shorten_from: "right"
+        theme_text_color: "Custom"
+        text_color: rgba(71,92,119,255)
+        font_size: "14sp"
+        pos_hint: {"center_x":.5,}
+    MDLabel:
+        text: root.lbl_car
+        halign: "center"
+        font_name: "MPoppins"
+        shorten: True
+        shorten_from: "right"
+        theme_text_color: "Custom"
+        text_color: rgba(71,92,119,255)
+        font_size: "14sp"
+        pos_hint: {"center_x":.5,}
+    MDLabel:
+        text: root.lbl_price
+        halign: "center"
+        font_name: "MPoppins"
+        shorten: True
+        shorten_from: "right"
+        theme_text_color: "Custom"
+        text_color: rgba(71,92,119,255)
+        font_size: "14sp"
+        pos_hint: {"center_x":.5,}
+
+    MDLabel:
+        text: root.lbl_location
+        halign: "center"
+        font_name: "MPoppins"
+        shorten: True
+        shorten_from: "right"
+        theme_text_color: "Custom"
+        text_color: rgba(71,92,119,255)
+        font_size: "14sp"
+        pos_hint: {"center_x":.5,}
+    
+    MDLabel:
+        text: root.lbl_status
+        halign: "center"
+        font_name: "MPoppins"
+        shorten: True
+        shorten_from: "right"
+        theme_text_color: "Custom"
+        text_color: rgba(71,92,119,255)
+        font_size: "14sp"
+        pos_hint: {"center_x":.5,}
+
+<NoticeBlock>
+    id: notice
+    size_hint_y: None
+    size_hint_x: .85
+    height: dp(250)
+    pos_hint: {"center_x":.5,"center_y":.6}
+    MDRelativeLayout:
+        line_color: .2,.2,.2,.7
+        md_bg_color: get_color_from_hex("#e0e0e0")
+        MDIconButton:
+            icon: "close"
+            pos_hint: {"center_x":.9,"center_y":.9}
+            on_release: 
+                root.parent.remove_widget(notice) 
+                
+        MDLabel:
+            text: root.lbl_product
+            halign: "center"
+            pos_hint: {"center_x":.5,"center_y":.8}
+            font_name: "MPoppins"
+            theme_text_color: "Custom"
+            text_color: rgba(71,92,119,255)
+            font_size: "14sp"
+
+        MDLabel:
+            text: root.lbl_date
+            halign: "center"
+            pos_hint: {"center_x":.5,"center_y":.67}
+            font_name: "MPoppins"
+            theme_text_color: "Custom"
+            text_color: rgba(71,92,119,255)
+            font_size: "14sp"
+
+        MDLabel:
+            text: root.lbl_location
+            halign: "center"
+            pos_hint: {"center_x":.5,"center_y":.44}
+            font_name: "MPoppins"
+            theme_text_color: "Custom"
+            text_color: rgba(71,92,119,255)
+            font_size: "14sp"
+        
+        Button:
+            id: btn_confirm
+            text: "CONFIRM"
+            size_hint: .66,.1
+            pos_hint: {"center_x":.5,"center_y":.16}
+            background_color: 0,0,0,0
+            font_name: "BPoppins"
+            color: rgba(52,0,231,255)
+            on_release:
+                root.on_release()
+            canvas.before:
+                Color:
+                    rgb: rgba(52,0,231,255)
+                Line:
+                    width:1.2
+                    rounded_rectangle: self.x,self.y,self.width,self.height,5,5,5,5,100
+    
+        
+
+<CustomItem>
+    id: one_cart_item
+    _no_ripple_effect: True  
+    IconLeftWidget:
+        icon: root.icon  
+

@@ -1,0 +1,607 @@
+#: import ew kivy.uix.effectwidget
+#: import get_color_from_hex kivy.utils.get_color_from_hex
+
+AdminManager:
+    name: "admin"
+    app: app
+    MDFloatLayout:
+        md_bg_color: 1,1,1,1
+        MDBoxLayout:
+            md_bg_color: rgba(62,62,47,255) 
+            size_hint_y: .45
+            pos_hint: {"top":1}
+            orientation: "vertical"
+            #EffectWidget:
+                #effects: [ew.VerticalBlurEffect(size=1),ew.HorizontalBlurEffect(size=1)]
+            Widget:
+                
+            MDCard:
+                pos_hint: {"center_x":.7}
+                size: ("150dp","150dp")
+                size_hint: None,None
+                md_bg_color: rgba(62,62,47,255) 
+                ripple_behavior: True
+                radius: self.height
+                FitImage:
+                    source: "frontend/assets/gray_spare.png"
+                    radius: root.radius
+            Widget:
+                size_hint_y: .3
+
+        MDIconButton:
+            icon: "dots-vertical"
+            pos_hint: {"center_y":.95}
+            user_font_size: "20sp"
+            theme_text_color: "Custom"
+            text_color: rgba(0,122,204,255)
+            on_release: nav_drawer.set_state("open")
+        MDIconButton:
+            icon: "logout"
+            pos_hint: {"center_x":.93,"center_y":.95}
+            user_font_size: "20sp"
+            theme_text_color: "Custom"
+            text_color: rgba(0,122,204,255)
+            on_release: 
+                root.manager.transition.direction = "left"
+                root.manager.current = "signin"
+        MDLabel:
+            text: "Rosslyn Gates"
+            font_name: "Motion"
+            font_size: "30sp"
+            halign: "center"
+            bold: True
+            pos_hint: { "center_y":.95}
+            color: rgba(71,92,119,255)
+        MDLabel:
+            text: "AutoGarage"
+            font_name: "Motion"
+            font_size: "25sp"
+            halign: "center"
+            bold: True
+            pos_hint: { "center_y":.90}
+            color: rgba(71,92,119,255)
+        
+        MDLabel:
+            text: "Hello,"
+            bold: True
+            font_name: "BPoppins"
+            font_style: "H4"
+            theme_text_color: "Custom"
+            text_color: rgba(188,202,228,255)
+            pos_hint: {"center_y":.80}
+            x: "24dp"
+        MDLabel:
+            id: email
+            text: ""
+            bold: True
+            font_name: "MPoppins"
+            font_style: "H6"
+            theme_text_color: "Custom"
+            text_color: rgba(246,250,255,255)
+            pos_hint: {"center_y":.72}
+            x: "24dp"
+            shorten: True
+            shorten_from: "right"
+        
+        MDGridLayout:
+            cols: 2
+            rows: 2
+            spacing: "24dp"
+            padding: "34dp"
+            size_hint_y: None
+            height: root.height / 1.5
+            Card:
+                id: service             
+                source: "frontend/assets/gray_lubricate.png"
+                text: "Add Services"
+                on_release:
+                    root.add_service(self)
+            Card:
+                id: store             
+                source: "frontend/assets/grey_gas.png"
+                text: "Add Accessories"
+                on_release:
+                    root.add_store(self)
+            Card:   
+                id: managers             
+                source: "frontend/assets/mechanic.png"
+                text: "Add Managers"
+                on_release:
+                    root.add_manager(self)
+            Card:   
+                id: orders             
+                source: "frontend/assets/order.png"
+                text: "Orders & Purchases"
+                on_release:
+                    root.check_orders()
+        
+        ServiceAddPopup:
+            id: add_services
+            size_hint: .9,.5
+            MDRelativeLayout:
+                MDIconButton:
+                    icon: "close"
+                    pos_hint: {"right":1,"center_y":1.4} 
+                    on_release:  
+                        root.show_popup(add_services,True)
+                        
+                        app.hide_widget(add_services)
+                MDLabel:
+                    id: service_title
+                    text: ""
+                    font_name: "BPoppins"
+                    font_size: "20sp"
+                    pos_hint: {"center_x":.6,"center_y":1.37}
+                    color: rgba(0,0,59,255)
+
+                MDLabel:
+                    text: "Fill the form to ..."
+                    font_name: "MPoppins"
+                    font_size: "18sp"
+                    pos_hint: {"center_x":.6,"center_y":1.28}
+                    color: rgba(135,133,195,255)
+                
+                MDFloatLayout:
+                    size_hint: .7,.15
+                    pos_hint: {"center_x":.5,"center_y":1.18}
+                    TextInput:
+                        id: service_type
+                        hint_text: "* Service Type"
+                        font_name: "MPoppins"
+                        size_hint_y: .75
+                        pos_hint: {"center_x":.5, "center_y":.5}
+                        background_color: 1,1,1,0
+                        foreground_color: rgba(0,0,59,255)
+                        cursor_color: rgba(0,0,59,255)
+                        font_size: "14sp"
+                        cursor_width: "2sp"
+                        multiline: False
+                        on_focus: 
+                            root.select_service()
+                        on_text_validate:
+                            service_cost.focus = True
+                    MDFloatLayout:
+                        pos_hint: {"center_x":.52,"center_y":0}
+                        size_hint_y:.03
+                        md_bg_color: rgba(178,178,178,255)
+                
+                MDFloatLayout:
+                    size_hint: .7,.15
+                    pos_hint: {"center_x":.5,"center_y":.99}
+                    TextInput:
+                        id: service_car
+                        hint_text: "* Service Category"
+                        font_name: "MPoppins"
+                        size_hint_y: .75
+                        pos_hint: {"center_x":.5, "center_y":.5}
+                        background_color: 1,1,1,0
+                        foreground_color: rgba(0,0,59,255)
+                        cursor_color: rgba(0,0,59,255)
+                        font_size: "14sp"
+                        cursor_width: "2sp"
+                        multiline: False
+                        on_focus:  root.select_car("service")
+                    MDFloatLayout:
+                        pos_hint: {"center_x":.52,"center_y":0}
+                        size_hint_y:.03
+                        md_bg_color: rgba(178,178,178,255)
+                
+                MDFloatLayout:
+                    size_hint: .7,.15
+                    pos_hint: {"center_x":.5,"center_y":.82}
+                    TextInput:
+                        id: service_cost
+                        hint_text: "* Service Cost"
+                        font_name: "MPoppins"
+                        size_hint_y: .75
+                        pos_hint: {"center_x":.5, "center_y":.5}
+                        background_color: 1,1,1,0
+                        foreground_color: rgba(0,0,59,255)
+                        cursor_color: rgba(0,0,59,255)
+                        font_size: "14sp"
+                        cursor_width: "2sp"
+                        multiline: False
+                        on_text_validate:
+                            
+                    MDFloatLayout:
+                        pos_hint: {"center_x":.52,"center_y":0}
+                        size_hint_y:.03
+                        md_bg_color: rgba(178,178,178,255)
+
+               
+                Button:
+                    text: "Add"
+                    size_hint: .66,.15
+                    pos_hint: {"center_x":.5,"center_y":.62}
+                    background_color: 0,0,0,0
+                    font_name: "BPoppins"
+                    on_release: root.add("service")
+                    canvas.before:
+                        Color:
+                            rgb: rgba(52,0,231,255)
+                        RoundedRectangle:
+                            size: self.size
+                            pos: self.pos
+                            radius: [5]
+                
+        ManagerAddPopup:
+            id: add_managers
+            size_hint: .9,.4
+            MDRelativeLayout:
+                MDIconButton:
+                    icon: "close"
+                    pos_hint: {"right":1,"center_y":1.6} 
+                    on_release:  
+                        root.show_popup(add_managers,True)
+                        
+                        app.hide_widget(add_managers)
+                MDLabel:
+                    id: manager_title
+                    text: ""
+                    font_name: "BPoppins"
+                    font_size: "20sp"
+                    pos_hint: {"center_x":.6,"center_y":1.55}
+                    color: rgba(0,0,59,255)
+
+                MDLabel:
+                    text: "Fill the form to ..."
+                    font_name: "MPoppins"
+                    font_size: "18sp"
+                    pos_hint: {"center_x":.6,"center_y":1.43}
+                    color: rgba(135,133,195,255)
+
+                MDFloatLayout:
+                    size_hint: .7,.2
+                    pos_hint: {"center_x":.5,"center_y":1.25}
+                    TextInput:
+                        id: manager_email
+                        hint_text: "* Add Email"
+                        font_name: "MPoppins"
+                        size_hint_y: .75
+                        pos_hint: {"center_x":.5, "center_y":.5}
+                        background_color: 1,1,1,0
+                        foreground_color: rgba(0,0,59,255)
+                        cursor_color: rgba(0,0,59,255)
+                        font_size: "14sp"
+                        cursor_width: "2sp"
+                        multiline: False
+                        on_focus: 
+                            
+                        on_text_validate:
+                            
+                    MDFloatLayout:
+                        pos_hint: {"center_x":.52,"center_y":0}
+                        size_hint_y:.03
+                        md_bg_color: rgba(178,178,178,255)
+
+               
+                Button:
+                    text: "Add"
+                    size_hint: .66,.15
+                    pos_hint: {"center_x":.5,"center_y":1}
+                    background_color: 0,0,0,0
+                    font_name: "BPoppins"
+                    on_release: root.add("manager")
+                    canvas.before:
+                        Color:
+                            rgb: rgba(52,0,231,255)
+                        RoundedRectangle:
+                            size: self.size
+                            pos: self.pos
+                            radius: [5]
+
+        OrdersPopup:  
+            id: orders_popup
+            MDRelativeLayout:
+                MDIconButton:
+                    icon: "close"
+                    pos_hint: {"right":1,"center_y":1} 
+                    on_release:  
+                        app.hide_widget(orders_popup,dohide=True)
+                        root.disble_all(False)
+                MDLabel:
+                    text: "Orders"
+                    font_name: "BPoppins"
+                    font_size: "23sp"
+                    pos_hint: {"center_x":.6,"center_y":.97}
+                    color: rgba(0,0,59,255)
+
+                MDCard:
+                    size_hint: .99,.75
+                    pos_hint: {"center_x":.56,"center_y":.55}
+                    #elevation: 4
+                    radius: [0,0,12,12]
+                    line_color: get_color_from_hex("#e0e0e0")
+                    ScrollView:
+                        MDSelectionList:
+                            id: selection_list
+                            spacing: "12dp"
+                            overlay_color: root.overlay_color[:-1] + [.2]
+                            icon_bg_color: root.overlay_color
+                            on_selected: root.on_selected(*args)
+                            on_unselected: root.on_unselected(*args)
+                            #on_selected_mode: root.set_selection_mode(*args)
+                
+                Button:
+                    id: delete_msg
+                    text: "DELETE"
+                    size_hint: .66,.065
+                    pos_hint: {"center_x":.5,"center_y":.12}
+                    background_color: 0,0,0,0
+                    font_name: "BPoppins"
+                    on_release: root.delete()
+                    disabled: True
+                    canvas.before:
+                        Color:
+                            rgb: rgba(52,0,231,255)
+                        RoundedRectangle:
+                            size: self.size
+                            pos: self.pos
+                            radius: [5]
+             
+        StoreAddPopup:  
+            id: add_resouce
+            size_hint: .9,.8
+            MDRelativeLayout:
+                MDIconButton:
+                    icon: "close"
+                    pos_hint: {"right":1,"center_y":1.05} 
+                    on_release:  
+                        root.show_popup(add_resouce,True)
+                        
+                        app.hide_widget(add_resouce)
+                MDLabel:
+                    id: store_title
+                    text: ""
+                    font_name: "BPoppins"
+                    font_size: "20sp"
+                    pos_hint: {"center_x":.6,"center_y":1.03}
+                    color: rgba(0,0,59,255)
+
+                MDLabel:
+                    text: "Fill the form to ..."
+                    font_name: "MPoppins"
+                    font_size: "18sp"
+                    pos_hint: {"center_x":.6,"center_y":.96}
+                    color: rgba(135,133,195,255)
+                
+                MDFloatLayout:
+                    size_hint: .7,.1
+                    pos_hint: {"center_x":.5,"center_y":.90}
+                    TextInput:
+                        id: store_car
+                        hint_text: "* Vehicle Type"
+                        font_name: "MPoppins"
+                        size_hint_y: .75
+                        pos_hint: {"center_x":.5, "center_y":.5}
+                        background_color: 1,1,1,0
+                        foreground_color: rgba(0,0,59,255)
+                        cursor_color: rgba(0,0,59,255)
+                        font_size: "14sp"
+                        cursor_width: "2sp"
+                        multiline: False
+                        on_focus: 
+                            root.select_car("store")
+                        on_text_validate:
+                    MDFloatLayout:
+                        pos_hint: {"center_x":.52,"center_y":0}
+                        size_hint_y:.03
+                        md_bg_color: rgba(178,178,178,255)
+                
+                MDFloatLayout:
+                    size_hint: .7,.1
+                    pos_hint: {"center_x":.5,"center_y":.78}
+                    TextInput:
+                        id: store_tag
+                        hint_text: "* Product Tag"
+                        font_name: "MPoppins"
+                        size_hint_y: .75
+                        pos_hint: {"center_x":.5, "center_y":.5}
+                        background_color: 1,1,1,0
+                        foreground_color: rgba(0,0,59,255)
+                        cursor_color: rgba(0,0,59,255)
+                        font_size: "14sp"
+                        cursor_width: "2sp"
+                        multiline: False
+                        on_focus:  root.select_tag()
+                    MDFloatLayout:
+                        pos_hint: {"center_x":.52,"center_y":0}
+                        size_hint_y:.03
+                        md_bg_color: rgba(178,178,178,255)
+                
+                MDFloatLayout:
+                    size_hint: .7,.1
+                    pos_hint: {"center_x":.5,"center_y":.66}
+                    TextInput:
+                        id: store_product
+                        hint_text: "* Product Name"
+                        font_name: "MPoppins"
+                        size_hint_y: .75
+                        pos_hint: {"center_x":.5, "center_y":.5}
+                        background_color: 1,1,1,0
+                        foreground_color: rgba(0,0,59,255)
+                        cursor_color: rgba(0,0,59,255)
+                        font_size: "14sp"
+                        cursor_width: "2sp"
+                        multiline: False
+                        on_text_validate:
+                            store_price.focus = True
+                            
+                    MDFloatLayout:
+                        pos_hint: {"center_x":.52,"center_y":0}
+                        size_hint_y:.03
+                        md_bg_color: rgba(178,178,178,255)
+                
+                MDFloatLayout:
+                    size_hint: .7,.1
+                    pos_hint: {"center_x":.5,"center_y":.54}
+                    TextInput:
+                        id: store_price
+                        hint_text: "* Price"
+                        font_name: "MPoppins"
+                        size_hint_y: .75
+                        pos_hint: {"center_x":.5, "center_y":.5}
+                        background_color: 1,1,1,0
+                        foreground_color: rgba(0,0,59,255)
+                        cursor_color: rgba(0,0,59,255)
+                        font_size: "14sp"
+                        cursor_width: "2sp"
+                        multiline: False
+                        on_text_validate:
+                            store_quantity.focus = True
+                            
+                    MDFloatLayout:
+                        pos_hint: {"center_x":.52,"center_y":0}
+                        size_hint_y:.03
+                        md_bg_color: rgba(178,178,178,255)
+                
+                MDFloatLayout:
+                    size_hint: .7,.1
+                    pos_hint: {"center_x":.5,"center_y":.42}
+                    TextInput:
+                        id: store_quantity
+                        hint_text: "* Quantity"
+                        font_name: "MPoppins"
+                        size_hint_y: .75
+                        pos_hint: {"center_x":.5, "center_y":.5}
+                        background_color: 1,1,1,0
+                        foreground_color: rgba(0,0,59,255)
+                        cursor_color: rgba(0,0,59,255)
+                        font_size: "14sp"
+                        cursor_width: "2sp"
+                        multiline: False
+                        on_text_validate:
+                            store_image.focus = True
+
+                    MDFloatLayout:
+                        pos_hint: {"center_x":.52,"center_y":0}
+                        size_hint_y:.03
+                        md_bg_color: rgba(178,178,178,255)
+                
+                MDFloatLayout:
+                    size_hint: .7,.1
+                    pos_hint: {"center_x":.5,"center_y":.3}
+                    TextInput:
+                        id: store_image
+                        hint_text: "Image"
+                        font_name: "MPoppins"
+                        size_hint_y: .75
+                        pos_hint: {"center_x":.5, "center_y":.5}
+                        background_color: 1,1,1,0
+                        foreground_color: rgba(0,0,59,255)
+                        cursor_color: rgba(0,0,59,255)
+                        font_size: "14sp"
+                        cursor_width: "2sp"
+                        multiline: False
+                        on_focus: 
+                            
+                        on_text_validate:
+                            
+                    MDFloatLayout:
+                        pos_hint: {"center_x":.52,"center_y":0}
+                        size_hint_y:.03
+                        md_bg_color: rgba(178,178,178,255)
+
+               
+                Button:
+                    text: "Add"
+                    size_hint: .66,.065
+                    pos_hint: {"center_x":.5,"center_y":.2}
+                    background_color: 0,0,0,0
+                    font_name: "BPoppins"
+                    on_release: root.add("store")
+                    canvas.before:
+                        Color:
+                            rgb: rgba(52,0,231,255)
+                        RoundedRectangle:
+                            size: self.size
+                            pos: self.pos
+                            radius: [5]
+             
+        MDNavigationDrawer:  
+            id: nav_drawer
+            radius: (0, 16, 16, 0)
+            type: "modal"
+            scrim_color: 1, 1, 1, .8
+            md_bg_color: rgba(249, 247, 243, 255) if app.theme_cls.theme_style == "Light" else rgba(51,53,62,255)
+            MDNavigationDrawerMenu:
+                
+                MDNavigationDrawerLabel:
+                    text: "Actions"
+                MDNavigationDrawerDivider:
+                    
+                DrawerClickableItem:
+                    icon: "account-cog-outline"
+                    text: "Update Profile"
+                    text_color: [0,0,0,1] if app.theme_cls.theme_style == "Light" else [1,1,1,1]
+                    icon_color: [0,0,0,1] if app.theme_cls.theme_style == "Light" else [1,1,1,1]
+                    
+                    on_release: 
+                        nav_drawer.set_state("close")
+                        root.manager.transition.direction = "left"
+                        root.manager.current = "update"
+                        
+                MDNavigationDrawerDivider:
+                    id: root_divider
+
+                DrawerClickableItem:
+                    id: root_action
+                    icon: "car-wrench"
+                    text: "Add Services"
+                    text_color: [0,0,0,1] if app.theme_cls.theme_style == "Light" else [1,1,1,1]
+                    icon_color: [0,0,0,1] if app.theme_cls.theme_style == "Light" else [1,1,1,1]
+                    on_release: 
+                        nav_drawer.set_state("close")
+                        root.add_service(self)
+                MDNavigationDrawerDivider:
+
+                DrawerClickableItem:
+                    icon: "oil"
+                    text_right_color: "#4a4939"
+                    text: "Add Accessories"
+                    text_color: [0,0,0,1] if app.theme_cls.theme_style == "Light" else [1,1,1,1]
+                    icon_color: [0,0,0,1] if app.theme_cls.theme_style == "Light" else [1,1,1,1]
+                    on_release:
+                        nav_drawer.set_state("close")
+                        root.add_store(self)
+                MDNavigationDrawerDivider:
+               
+                DrawerClickableItem:
+                    icon: "account-group-outline"
+                    text: "Add Managers"
+                    text_color: [0,0,0,1] if app.theme_cls.theme_style == "Light" else [1,1,1,1]
+                    icon_color: [0,0,0,1] if app.theme_cls.theme_style == "Light" else [1,1,1,1]
+                    on_release: 
+                        nav_drawer.set_state("close")
+                        root.add_manager(self)
+                MDNavigationDrawerDivider:
+
+                DrawerClickableItem:
+                    id: notice
+                    icon: "cart-variant"
+                    right_text: ""
+                    text_right_color: "#4a4939"
+                    text: "Orders & Purchases"
+                    text_color: [0,0,0,1] if app.theme_cls.theme_style == "Light" else [1,1,1,1]
+                    icon_color: [0,0,0,1] if app.theme_cls.theme_style == "Light" else [1,1,1,1]
+                    on_release:
+                        nav_drawer.set_state("close")
+                        root.check_orders()
+                MDNavigationDrawerDivider:
+               
+               
+                    
+                DrawerClickableItem:
+                    icon: "information-variant"
+                    text: "Get Started"
+                    text_color: [0,0,0,1] if app.theme_cls.theme_style == "Light" else [1,1,1,1]
+                    icon_color: [0,0,0,1] if app.theme_cls.theme_style == "Light" else [1,1,1,1]
+                    on_release: 
+                        nav_drawer.set_state("close")
+
+                    
+                MDNavigationDrawerDivider:
+                MDNavigationDrawerDivider:
+                MDNavigationDrawerLabel
+                    text: "copyright © 2022"
+                MDNavigationDrawerDivider:
