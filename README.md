@@ -27,5 +27,5 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ### Contact
 - [Racheal Sure](https://github.com/rachealsure)
-- r
+- email address: mnyaboe33@gmail.com
 
